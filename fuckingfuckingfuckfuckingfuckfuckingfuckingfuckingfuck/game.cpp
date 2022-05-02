@@ -1,10 +1,10 @@
 #include "head.h"
 
-void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map) {
+void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 	int player = 1, first_score = 1, second_score = 1, score = 1, tmpX, tmpY, beforeW = 1200, beforeH = 1000, newW = 1200, newH = 1000;
 	//SDL_GetWindowSize(window, &newW, &newH);
-	//rect[4] = { int(17 * (newW / beforeW)) + 1, int(892 * (newH / beforeH)), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
-	//rect[5] = { int(64 * (newW / beforeW)) + 1, int(892 * (newH / beforeH)), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; //redchip
+	rect[4] = { blueX0, blueY0, int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
+	rect[5] = { redX0, redY0, int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, player, map);
 	int WIDTH, HEIGHT;
 	bool quit = false;
@@ -30,7 +30,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderPresent(renderer);
 					SDL_DestroyTexture(texture);
 					SDL_GetWindowSize(window, &newW, &newH);
-					resizeRects(window, rect, beforeW, beforeH, newW, newH);
+					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 					drawMovingPlayer(renderer, surface, texture, rect, player, map);
 					beforeW = newW, beforeH = newH;
 				}
@@ -74,7 +74,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	}
 }
 
-void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map) {
+void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 	SDL_RenderClear(renderer);
 	switch (map) {
 	case 1: { surface = SDL_LoadBMP("map1.bmp"); } break;
@@ -87,7 +87,7 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	drawChips(renderer, surface, texture, rect);
 	SDL_DestroyTexture(texture);
 	
-	game(window, renderer, surface, texture, rect, 1);
+	game(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0);
 }
 
 void drawChips(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
