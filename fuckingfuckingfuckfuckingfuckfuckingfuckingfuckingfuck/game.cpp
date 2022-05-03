@@ -1,12 +1,9 @@
 #include "head.h"
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH) {
-	int player = 1, first_score = 1, second_score = 1, score = 1, tmpX, tmpY, W, H;
-	//SDL_GetWindowSize(window, &newW, &newH);
+	int player = 1, first_score = 1, second_score = 1, score = 1, W, H;
 	rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
-	//rect[4] = { blueX0, blueY0, int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
-	//rect[5] = { redX0, redY0, int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, player, map);
 	int WIDTH, HEIGHT;
 	bool quit = false;
@@ -36,7 +33,6 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					newW = W, newH = H;
 					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 					drawMovingPlayer(renderer, surface, texture, rect, player, map);
-					/*beforeW = newW, beforeH = newH;*/
 				}
 				else { break; }
 			} break;
@@ -54,20 +50,6 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					else { player = 1; }
 
 					drawMovingPlayer(renderer, surface, texture, rect, player, map);
-
-					//if (flag) {
-					//	player = 1;
-					//	chipMoving(renderer, surface, texture, rect, player, second_score, map);
-					//	flag = false;
-					//}
-					//else {
-					//	player = 2;
-					//	chipMoving(renderer, surface, texture, rect, player, first_score, map);
-					//	flag = true;
-					//}
-
-					/*drawMovingPlayer(renderer, surface, texture, rect, player);*/
-					/*drawChips(renderer, surface, texture, rect);*/
 
 					cout << "bebra" << endl;
 			}
@@ -88,24 +70,24 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, NULL); 
-	drawChips(renderer, surface, texture, rect);
+	//drawChips(renderer, surface, texture, rect);
 	SDL_DestroyTexture(texture);
 	
 	game(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH);
 }
 
-void drawChips(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
-	surface = SDL_LoadBMP("bluechip_scaled.bmp");
-	texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_RenderCopy(renderer, texture, NULL, &rect[4]);
-	SDL_DestroyTexture(texture);
-	surface = SDL_LoadBMP("redchip_scaled.bmp");
-	texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-	SDL_RenderCopy(renderer, texture, NULL, &rect[5]);
-	SDL_RenderPresent(renderer);
-	SDL_DestroyTexture(texture);
-}
+//void drawChips(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
+//	surface = SDL_LoadBMP("bluechip_scaled.bmp");
+//	texture = SDL_CreateTextureFromSurface(renderer, surface);
+//	SDL_RenderCopy(renderer, texture, NULL, &rect[4]);
+//	SDL_DestroyTexture(texture);
+//	surface = SDL_LoadBMP("redchip_scaled.bmp");
+//	texture = SDL_CreateTextureFromSurface(renderer, surface);
+//	SDL_FreeSurface(surface);
+//	SDL_RenderCopy(renderer, texture, NULL, &rect[5]);
+//	SDL_RenderPresent(renderer);
+//	SDL_DestroyTexture(texture);
+//}
 
 void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int player, int map) {
 	switch (map) {
@@ -117,6 +99,7 @@ void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture*
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, &rect[15] , &rect[14]);
 	SDL_RenderPresent(renderer);
+	SDL_DestroyTexture(texture);
 	switch (player) {
 	case 1: surface = SDL_LoadBMP("firstplayer_move.bmp"); break;
 	case 2: surface = SDL_LoadBMP("secondplayer_move.bmp"); break;
@@ -125,6 +108,7 @@ void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture*
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, &rect[6]);
+	SDL_DestroyTexture(texture);
 	surface = SDL_LoadBMP("bluechip_scaled.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_RenderCopy(renderer, texture, NULL, &rect[4]);
@@ -138,11 +122,7 @@ void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture*
 }
 
 void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int movingPlayer, int& playerScore, int map, int beforeW, int beforeH, float newW, float newH) {
-	int randomArray[6], random = 0, tmp, chip, tmpNextStroka = 1, nextStroka = 1, WIDTH, HEIGHT;
-	bool changeY = true;
-
-	//SDL_GetWindowSize(window, &WIDTH, &HEIGHT);
-	//newW = WIDTH; newH = HEIGHT;
+	int randomArray[6], random = 0, chip, tmp, WIDTH, HEIGHT;
 
 	switch (movingPlayer) {
 	case 1: { chip = 4; } break;
@@ -188,21 +168,13 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 			SDL_Delay(100);
 		}
 	}
+	SDL_DestroyTexture(texture);
 
 	for (int i = randomArray[5]; i > 0; i--) {
 
 		if (playerScore + randomArray[5] > 100) {
 			return;
 		}
-
-		//if (playerScore == 10) {
-		//	switch (chip) {
-		//	case 4: rect[chip] = { int(917 * (tmpWIDTH / 1200)), int(796 * (tmpHEIGHT / 1000)), rect[chip].w, rect[chip].h }; break;
-		//	case 5: rect[chip] = { int(964 * (tmpWIDTH / 1200)), int(796 * (tmpHEIGHT / 1000)), rect[chip].w, rect[chip].h };  break;
-		//	}
-		//	playerScore++; 
-		//	continue;
-		//}
 
 		if (playerScore == 10) {
 			switch (chip) {
@@ -215,8 +187,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 20) {
 			switch (chip) {
-			case 4: rect[chip] = { 18, 701, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 71, 701, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(18 * (newW / 1200)), int(701 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(71 * (newW / 1200)),  int(701 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -224,8 +196,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 30) {
 			switch (chip) {
-			case 4: rect[chip] = { 918, 602, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 970, 602, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(918 * (newW / 1200)), int(602 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(970 * (newW / 1200)), int(602 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -233,8 +205,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 40) {
 			switch (chip) {
-			case 4: rect[chip] = { 18, 505, rect[chip].w, rect[chip].h }; break; 
-			case 5: rect[chip] = { 70, 505, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(18 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(70 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -242,8 +214,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 50) {
 			switch (chip) {
-			case 4: rect[chip] = { 917, 408, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 970, 408, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(917 * (newW / 1200)), int(408 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(970 * (newW / 1200)), int(408 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -251,8 +223,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 60) {
 			switch (chip) {
-			case 4: rect[chip] = { 19, 311, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 72, 311, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(19 * (newW / 1200)), int(311 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(72 * (newW / 1200)), int(311 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -260,8 +232,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 70) {
 			switch (chip) {
-			case 4: rect[chip] = { 918, 212, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 971, 212, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(918 * (newW / 1200)), int(212 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(971 * (newW / 1200)), int(212 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -269,8 +241,8 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 80) {
 			switch (chip) {
-			case 4: rect[chip] = { 18, 116, rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 71, 116, rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(18 * (newW / 1200)), int(116 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(71 * (newW / 1200)), int(116 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
@@ -278,109 +250,70 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 
 		if (playerScore == 90) {
 			switch (chip) {
-			case 4: rect[chip] = { 917, 18 , rect[chip].w, rect[chip].h }; break;
-			case 5: rect[chip] = { 970, 18 , rect[chip].w, rect[chip].h }; break;
+			case 4: rect[chip] = { int(917 * (newW / 1200)), int(18 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
+			case 5: rect[chip] = { int(970 * (newW / 1200)), int(18 * (newH / 1000)) , rect[chip].w, rect[chip].h }; break;
 			}
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 1 && playerScore + 1 <= 10) {
-			rect[chip] = { rect[chip].x + int(99 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
-			/*rect[chip] = { blueX, rect[chip].y, rect[chip].w, rect[chip].h };*/
+			rect[chip] = { rect[chip].x + int(100 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
+	
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 11 && playerScore + 1 <= 20) {
 			rect[chip] = { rect[chip].x - int(100 * (newW / 1200)), rect[chip].y , rect[chip].w, rect[chip].h };
-			/*rect[chip] = { blueX, rect[chip].y, rect[chip].w, rect[chip].h };*/
 			playerScore++;
 			continue;
 		}
 
-		//if (playerScore + 1 >= 1 && playerScore + 1 <= 10) {
-		//	if (chip == 4) {
-		//		blueX = rect[chip].x + int(100 * (newW / beforeW));
-		//		//if (changeY) {
-		//		//	/*blueY = int(rect[chip].y * (tmpHEIGHT / 1000));*/
-		//		//	blueY = int(rect[chip].y * (newH / beforeH));
-		//		//	changeY = false;
-		//		//}
-		//		rect[chip] = { blueX, rect[chip].y, rect[chip].w, rect[chip].h };
-		//	}
-		//	else {
-		//		redX = rect[chip].x + int(100 * (newW / beforeW));
-		//		//if (changeY) {
-		//		//	/*redY = int(rect[chip].y * (tmpHEIGHT / 1000));*/
-		//		//	redY = int(rect[chip].y * (newH / beforeH));
-		//		//	changeY = false;
-		//		//}
-		//		rect[chip] = { redX, rect[chip].y, rect[chip].w, rect[chip].h };
-		//	}
-		//	/*rect[chip] = { blueX, rect[chip].y, rect[chip].w, rect[chip].h };*/
-		//	playerScore++;
-		//	continue;
-		//}
-
-		// вроде бы нормальный вариант, надо ещё чёто потыкать хз завтра разберёмся 
-
-		//if (playerScore + 1 >= 1 && playerScore + 1 <= 10) {
-		//	rect[chip] = { rect[chip].x + int(100 * (newW / beforeW)), int(rect[chip].y * (newH / beforeH)), rect[chip].w, rect[chip].h };
-		//	playerScore++;
-		//	continue;
-		//}
-
-		//if (playerScore + 1 >= 11 && playerScore + 1 <= 20) {
-		//	rect[chip] = { rect[chip].x - int(100 * (newW / beforeW)), int(rect[chip].y * (newH / beforeH)), rect[chip].w, rect[chip].h };
-		//	playerScore++;
-		//	continue;
-		//}
-
 		if (playerScore + 1 >= 21 && playerScore + 1 <= 30) {
-			rect[chip] = { rect[chip].x + 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 31 && playerScore + 1 <= 40) {
-			rect[chip] = { rect[chip].x - 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x - int(100 * (newW / 1200)) , rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 41 && playerScore + 1 <= 50) {
-			rect[chip] = { rect[chip].x + 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 51 && playerScore + 1 <= 60) {
-			rect[chip] = { rect[chip].x - 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x - int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 61 && playerScore + 1 <= 70) {
-			rect[chip] = { rect[chip].x + 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(100 * (newW / 1200)) , rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 71 && playerScore + 1 <= 80) {
-			rect[chip] = { rect[chip].x - 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x - int(100 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 81 && playerScore + 1 <= 90) {
-			rect[chip] = { rect[chip].x + 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(100 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
 
 		if (playerScore + 1 >= 91 && playerScore + 1 <= 100) {
-			rect[chip] = { rect[chip].x - 100 , rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x - int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}

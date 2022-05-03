@@ -4,7 +4,6 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	SDL_Event event;
 	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H;
 	float newW = 1200, newH = 1000;
-	/*float newW, newH;*/
 	bool quit = false, initilization = true;
 	while (!quit)
 	{
@@ -33,7 +32,6 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_GetWindowSize(window, &W, &H);
 					newW = W, newH = H;
 					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
-					/*beforeW = newW, beforeH = newH;*/
 				}
 				else { break; }
 			} break;
@@ -79,7 +77,6 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 
 	float tmpWIDTH, tmpHEIGHT;
 
-
 	rect[0] = { int(rect[0].x * (newW / beforeW)) + 1, int(rect[0].y * (newH / beforeH)), int(rect[0].w * (newW / beforeW)), int(rect[0].h * (newH / beforeH)) }; // play
 	rect[1] = { int(rect[1].x * (newW / beforeW)) + 1, int(rect[1].y * (newH / beforeH)), int(rect[1].w * (newW / beforeW)), int(rect[1].h * (newH / beforeH)) }; // records
 	rect[2] = { int(rect[2].x * (newW / beforeW)) + 1, int(rect[2].y * (newH / beforeH)), int(rect[2].w * (newW / beforeW)), int(rect[2].h * (newH / beforeH)) }; // settings
@@ -87,16 +84,24 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	rect[4] = { int(rect[4].x * (newW / beforeW)) + 1, int(rect[4].y * (newH / beforeH)), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
 	rect[5] = { int(rect[5].x * (newW / beforeW)) + 1, int(rect[5].y * (newH / beforeH)), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; // redchip
 	rect[6] = { int(rect[6].x * (newW / beforeW)) + 1, int(rect[6].y * (newH / beforeH)), int(rect[6].w * (newW / beforeW)), int(rect[6].h * (newH / beforeH)) }; // move_button
-	rect[7] = { int(rect[7].x * (newW / beforeW)) + 1, int(rect[7].y * (newH / beforeH)), int(rect[7].w * (newW / beforeW)) + 1, int(rect[7].h * (newH / beforeH)) + 1}; // dice
-	rect[14] = { int(rect[14].x * (newW / beforeW)), int(rect[14].y * (newH / beforeH)), int(rect[14].w * (newW / beforeW)) + 1, int(rect[14].h * (newH / beforeH)) + 1}; // gamezone
+	rect[7] = { int(rect[7].x * (newW / beforeW)) + 1, int(rect[7].y * (newH / beforeH)), int(rect[7].w * (newW / beforeW)) + 1, int(rect[7].h * (newH / beforeH)) + 1 }; // dice
+	rect[14] = { int(rect[14].x * (newW / beforeW)), int(rect[14].y * (newH / beforeH)), int(rect[14].w * (newW / beforeW)) + 1, int(rect[14].h * (newH / beforeH)) + 1 }; // gamezone
+
+	//rect[0] = { int(rect[0].x * (newW / 1200)) + 1, int(rect[0].y * (newH / 1000)), int(rect[0].w * (newW / 1200)), int(rect[0].h * (newH / 1000)) }; // play
+	//rect[1] = { int(rect[1].x * (newW / 1200)) + 1, int(rect[1].y * (newH / 1000)), int(rect[1].w * (newW / 1200)), int(rect[1].h * (newH / 1000)) }; // records
+	//rect[2] = { int(rect[2].x * (newW / 1200)) + 1, int(rect[2].y * (newH / 1000)), int(rect[2].w * (newW / 1200)), int(rect[2].h * (newH / 1000)) }; // settings
+	//rect[3] = { int(rect[3].x * (newW / 1200)) + 1, int(rect[3].y * (newH / 1000)), int(rect[3].w * (newW / 1200)), int(rect[3].h * (newH / 1000)) }; // exit
+	//rect[4] = { int(rect[4].x * (newW / 45)) + 1, int(rect[4].y * (newH / 90)), int(rect[4].w * (newW / 45)), int(rect[4].h * (newH / 90)) }; // bluechip
+	//rect[5] = { int(rect[5].x * (newW / 45)) + 1, int(rect[5].y * (newH / 90)), int(rect[5].w * (newW / 45)), int(rect[5].h * (newH / 90)) }; // redchip
+	//rect[6] = { int(rect[6].x * (newW / 200)) + 1, int(rect[6].y * (newH / 200)), int(rect[6].w * (newW / 200)), int(rect[6].h * (newH / 200)) }; // move_button
+	//rect[7] = { int(rect[7].x * (newW / 100)) + 1, int(rect[7].y * (newH / 100)), int(rect[7].w * (newW / 100)) + 1, int(rect[7].h * (newH / 100)) + 1}; // dice
+	//rect[14] = { int(rect[14].x * (newW / 1010)), int(rect[14].y * (newH / 980)), int(rect[14].w * (newW / 1010)) + 1, int(rect[14].h * (newH / 980)) + 1}; // gamezone
 
 	blueX0 = int(17 * (newW / beforeW));
 	blueY0 = 892 * (newH / beforeH);
 	redX0 = 64 * (newW / beforeW);
 	redY0 = 892 * (newH / beforeH);
 
-	//rect[4] = { int(blueX * (newW / beforeW)) + 1, int(blueY * (newH / beforeH)), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
-	//rect[5] = { int(redX * (newW / beforeW)) + 1, int(redY * (newH / beforeH)), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; // redchip
 }
 
 SDL_Texture* get_text_texture(SDL_Renderer*& renderer, char* text, TTF_Font* font)
