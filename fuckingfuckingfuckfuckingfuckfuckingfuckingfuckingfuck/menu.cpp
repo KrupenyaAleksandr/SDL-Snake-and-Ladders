@@ -2,8 +2,9 @@
 
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
-	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W = 0, H = 0;
-	float newW, newH;
+	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H;
+	float newW = 1200, newH = 1000;
+	/*float newW, newH;*/
 	bool quit = false, initilization = true;
 	while (!quit)
 	{
@@ -28,10 +29,11 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_RenderPresent(renderer);
 					SDL_DestroyTexture(texture);
+					beforeW = newW, beforeH = newH;
 					SDL_GetWindowSize(window, &W, &H);
 					newW = W, newH = H;
 					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
-					beforeW = newW, beforeH = newH;
+					/*beforeW = newW, beforeH = newH;*/
 				}
 				else { break; }
 			} break;
@@ -39,7 +41,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 				if (event.button.x >= rect[0].x && event.button.x <= rect[0].w + rect[0].x && event.button.y >= rect[0].y && event.button.y <= rect[0].h + rect[0].y) {
 					cout << "play" << endl;
 					initilization = true;
-					initGame(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0);
+					initGame(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH);
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
 					cout << "records" << endl;
@@ -58,7 +60,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-	window = SDL_CreateWindow(u8"òðàõàë", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	window = SDL_CreateWindow(u8"òðàõàë", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
 	Mix_Init(0);
@@ -85,8 +87,8 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	rect[4] = { int(rect[4].x * (newW / beforeW)) + 1, int(rect[4].y * (newH / beforeH)), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
 	rect[5] = { int(rect[5].x * (newW / beforeW)) + 1, int(rect[5].y * (newH / beforeH)), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; // redchip
 	rect[6] = { int(rect[6].x * (newW / beforeW)) + 1, int(rect[6].y * (newH / beforeH)), int(rect[6].w * (newW / beforeW)), int(rect[6].h * (newH / beforeH)) }; // move_button
-	rect[7] = { int(rect[7].x * (newW / beforeW)) + 1, int(rect[7].y * (newH / beforeH)), int(rect[7].w * (newW / beforeW)), int(rect[7].h * (newH / beforeH)) }; // dice
-	rect[14] = { int(rect[14].x * (newW / beforeW)) + 1, int(rect[14].y * (newH / beforeH)), int(rect[14].w * (newW / beforeW)), int(rect[14].h * (newH / beforeH)) }; // gamezone
+	rect[7] = { int(rect[7].x * (newW / beforeW)) + 1, int(rect[7].y * (newH / beforeH)), int(rect[7].w * (newW / beforeW)) + 1, int(rect[7].h * (newH / beforeH)) + 1}; // dice
+	rect[14] = { int(rect[14].x * (newW / beforeW)), int(rect[14].y * (newH / beforeH)), int(rect[14].w * (newW / beforeW)) + 1, int(rect[14].h * (newH / beforeH)) + 1}; // gamezone
 
 	blueX0 = int(17 * (newW / beforeW));
 	blueY0 = 892 * (newH / beforeH);
