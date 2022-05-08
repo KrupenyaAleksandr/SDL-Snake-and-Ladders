@@ -81,11 +81,11 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	rect[1] = { int(rect[1].x * (newW / beforeW)) + 1, int(rect[1].y * (newH / beforeH)), int(rect[1].w * (newW / beforeW)), int(rect[1].h * (newH / beforeH)) }; // records
 	rect[2] = { int(rect[2].x * (newW / beforeW)) + 1, int(rect[2].y * (newH / beforeH)), int(rect[2].w * (newW / beforeW)), int(rect[2].h * (newH / beforeH)) }; // settings
 	rect[3] = { int(rect[3].x * (newW / beforeW)) + 1, int(rect[3].y * (newH / beforeH)), int(rect[3].w * (newW / beforeW)), int(rect[3].h * (newH / beforeH)) }; // exit
-	rect[4] = { int(rect[4].x * (newW / beforeW)) + 1, int(rect[4].y * (newH / beforeH)), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH)) }; // bluechip
-	rect[5] = { int(rect[5].x * (newW / beforeW)) + 1, int(rect[5].y * (newH / beforeH)), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH)) }; // redchip
-	rect[6] = { int(rect[6].x * (newW / beforeW)) + 1, int(rect[6].y * (newH / beforeH)), int(rect[6].w * (newW / beforeW)), int(rect[6].h * (newH / beforeH)) }; // move_button
-	rect[7] = { int(rect[7].x * (newW / beforeW)) + 1, int(rect[7].y * (newH / beforeH)), int(rect[7].w * (newW / beforeW)) + 1, int(rect[7].h * (newH / beforeH)) + 1 }; // dice
-	rect[14] = { int(rect[14].x * (newW / beforeW)), int(rect[14].y * (newH / beforeH)), int(rect[14].w * (newW / beforeW)) + 1, int(rect[14].h * (newH / beforeH)) + 1 }; // gamezone
+	rect[4] = { int(rect[4].x * (newW / beforeW) + 0.5), int(rect[4].y * (newH / beforeH) + 0.5), int(rect[4].w * (newW / beforeW)), int(rect[4].h * (newH / beforeH) + 0.5) }; // bluechip
+	rect[5] = { int(rect[5].x * (newW / beforeW) + 0.5), int(rect[5].y * (newH / beforeH) + 0.5), int(rect[5].w * (newW / beforeW)), int(rect[5].h * (newH / beforeH) + 0.5) }; // redchip
+	rect[6] = { int(rect[6].x * (newW / beforeW) + 0.5), int(rect[6].y * (newH / beforeH)), int(rect[6].w * (newW / beforeW)), int(rect[6].h * (newH / beforeH)) }; // move_button
+	rect[7] = { int(rect[7].x * (newW / beforeW) + 0.5), int(rect[7].y * (newH / beforeH) + 0.5), int(rect[7].w * (newW / beforeW) + 0.5), int(rect[7].h * (newH / beforeH) + 0.5) }; // dice
+	rect[14] = { int(rect[14].x * (newW / beforeW) + 0.5), int(rect[14].y * (newH / beforeH) + 0.5), int(rect[14].w * (newW / beforeW) + 0.5), int(rect[14].h * (newH / beforeH) + 0.5) }; // gamezone
 
 	//rect[0] = { int(rect[0].x * (newW / 1200)) + 1, int(rect[0].y * (newH / 1000)), int(rect[0].w * (newW / 1200)), int(rect[0].h * (newH / 1000)) }; // play
 	//rect[1] = { int(rect[1].x * (newW / 1200)) + 1, int(rect[1].y * (newH / 1000)), int(rect[1].w * (newW / 1200)), int(rect[1].h * (newH / 1000)) }; // records
