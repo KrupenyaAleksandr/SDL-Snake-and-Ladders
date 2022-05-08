@@ -70,7 +70,6 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, NULL); 
-	//drawChips(renderer, surface, texture, rect);
 	SDL_DestroyTexture(texture);
 	
 	game(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH);
