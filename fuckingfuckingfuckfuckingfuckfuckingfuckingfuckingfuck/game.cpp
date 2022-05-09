@@ -1,6 +1,8 @@
 #include "head.h"
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH) {
+	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
+
 	int player = 1, first_score = 1, second_score = 1, score = 1, W, H;
 	rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
@@ -13,7 +15,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			switch (event.type) {
 			case SDL_QUIT: {exit(0); } break;
 			case SDL_KEYUP: {
-				if (event.key.keysym.sym == SDLK_ESCAPE) { quit = true; }
+				if (event.key.keysym.sym == SDLK_ESCAPE) { Mix_FreeChunk(DICE); quit = true; }
 				else { break; }
 			} break;
 			case SDL_WINDOWEVENT: {
@@ -39,6 +41,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			case SDL_MOUSEBUTTONUP: { 
 				if (event.button.x >= rect[6].x && event.button.x <= rect[6].x + rect[6].w && event.button.y >= rect[6].y && event.button.y <= rect[6].y + rect[6].h) {
 
+					Mix_PlayChannel(-1, DICE, 0);
 					switch (player) {
 					case 1: chipMoving(window, renderer, surface, texture, rect, player, first_score, map, beforeW, beforeH, newW, newH); break;
 					case 2: chipMoving(window, renderer, surface, texture, rect, player, second_score, map, beforeW, beforeH, newW, newH); break;
@@ -422,5 +425,5 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 	default: break;
 	}
 
-	SDL_Delay(1000);
+	SDL_Delay(800);
 }
