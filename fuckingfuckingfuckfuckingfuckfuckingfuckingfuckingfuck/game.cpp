@@ -2,12 +2,10 @@
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH) {
 	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
-
 	int player = 1, first_score = 1, second_score = 1, score = 1, W, H;
 	rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, player, map);
-	int WIDTH, HEIGHT;
 	bool quit = false;
 	SDL_Event event;
 	while (!quit) {

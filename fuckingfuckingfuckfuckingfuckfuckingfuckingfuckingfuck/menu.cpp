@@ -2,6 +2,7 @@
 
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
+	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
 	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H;
 	float newW = 1200, newH = 1000;
 	bool quit = false, initilization = true;
@@ -9,6 +10,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	{
 		if (initilization) {
 			cout << "menu" << endl;
+			Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
 			surface = SDL_LoadBMP("menu.bmp");
 			texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_FreeSurface(surface);
@@ -29,7 +31,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderPresent(renderer);
 					SDL_DestroyTexture(texture);
 					beforeW = newW, beforeH = newH;
-					SDL_GetWindowSize(window, &W, &H);
+					SDL_GetWindowSize(window, &W, &H); 
 					newW = W, newH = H;
 					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 				}
@@ -37,17 +39,26 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			} break;
 			case SDL_MOUSEBUTTONUP: {
 				if (event.button.x >= rect[0].x && event.button.x <= rect[0].w + rect[0].x && event.button.y >= rect[0].y && event.button.y <= rect[0].h + rect[0].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "play" << endl;
 					initilization = true;
 					initGame(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH);
+					Mix_FreeChunk(BUTTON);
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "records" << endl;
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+
 					cout << "settings" << endl;
 				}
-				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y){ cout << "quit" << endl; quit = true;}
+				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y){
+					Mix_PlayChannel(-1, BUTTON, 0);
+					SDL_Delay(300);
+					cout << "quit" << endl; 
+					quit = true;}
 				else { break;  }
 			} break;
 			default: break;
