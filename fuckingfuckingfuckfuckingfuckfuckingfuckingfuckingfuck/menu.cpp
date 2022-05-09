@@ -3,7 +3,7 @@
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
 	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H;
+	int blueX0, blueY0, redX0, redY0, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map = 1;
 	float newW = 1200, newH = 1000;
 	bool quit = false, initilization = true;
 	while (!quit)
@@ -11,6 +11,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 		if (initilization) {
 			cout << "menu" << endl;
 			Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+			first_score = 1, second_score = 1, player = 1, blueX0 = rect[4].x = 17, blueY0 = rect[4].y = 892, redX0 = rect[5].x = 64, redY0 = rect[5].y = 892;
 			surface = SDL_LoadBMP("menu.bmp");
 			texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_FreeSurface(surface);
@@ -42,12 +43,16 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "play" << endl;
 					initilization = true;
-					initGame(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH);
+					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, player);
 					Mix_FreeChunk(BUTTON);
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
-					cout << "records" << endl;
+					initilization = true;
+					loadFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, first_score, second_score, player, map);
+					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, player);
+					Mix_FreeChunk(BUTTON);
+					cout << "continue" << endl;
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
@@ -87,6 +92,7 @@ void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, float newW, float newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 
 	float tmpWIDTH, tmpHEIGHT;
+	int tblueX, tblueY, tredX, tredY, tmove, tmap, tfirst, tsecond;
 
 	rect[0] = { int(rect[0].x * (newW / beforeW) + 0.5), int(rect[0].y * (newH / beforeH) + 0.5), int(rect[0].w * (newW / beforeW) + 0.5), int(rect[0].h * (newH / beforeH) + 0.5) }; // play
 	rect[1] = { int(rect[1].x * (newW / beforeW) + 0.5), int(rect[1].y * (newH / beforeH) + 0.5), int(rect[1].w * (newW / beforeW) + 0.5), int(rect[1].h * (newH / beforeH) + 0.5) }; // records
@@ -98,21 +104,17 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	rect[7] = { int(rect[7].x * (newW / beforeW) + 0.5), int(rect[7].y * (newH / beforeH) + 0.5), int(rect[7].w * (newW / beforeW) + 0.5), int(rect[7].h * (newH / beforeH) + 0.5) }; // dice
 	rect[14] = { int(rect[14].x * (newW / beforeW) + 0.5), int(rect[14].y * (newH / beforeH) + 0.5), int(rect[14].w * (newW / beforeW) + 0.5), int(rect[14].h * (newH / beforeH) + 0.5) }; // gamezone
 
-	//rect[0] = { int(rect[0].x * (newW / 1200)) + 1, int(rect[0].y * (newH / 1000)), int(rect[0].w * (newW / 1200)), int(rect[0].h * (newH / 1000)) }; // play
-	//rect[1] = { int(rect[1].x * (newW / 1200)) + 1, int(rect[1].y * (newH / 1000)), int(rect[1].w * (newW / 1200)), int(rect[1].h * (newH / 1000)) }; // records
-	//rect[2] = { int(rect[2].x * (newW / 1200)) + 1, int(rect[2].y * (newH / 1000)), int(rect[2].w * (newW / 1200)), int(rect[2].h * (newH / 1000)) }; // settings
-	//rect[3] = { int(rect[3].x * (newW / 1200)) + 1, int(rect[3].y * (newH / 1000)), int(rect[3].w * (newW / 1200)), int(rect[3].h * (newH / 1000)) }; // exit
-	//rect[4] = { int(rect[4].x * (newW / 45)) + 1, int(rect[4].y * (newH / 90)), int(rect[4].w * (newW / 45)), int(rect[4].h * (newH / 90)) }; // bluechip
-	//rect[5] = { int(rect[5].x * (newW / 45)) + 1, int(rect[5].y * (newH / 90)), int(rect[5].w * (newW / 45)), int(rect[5].h * (newH / 90)) }; // redchip
-	//rect[6] = { int(rect[6].x * (newW / 200)) + 1, int(rect[6].y * (newH / 200)), int(rect[6].w * (newW / 200)), int(rect[6].h * (newH / 200)) }; // move_button
-	//rect[7] = { int(rect[7].x * (newW / 100)) + 1, int(rect[7].y * (newH / 100)), int(rect[7].w * (newW / 100)) + 1, int(rect[7].h * (newH / 100)) + 1}; // dice
-	//rect[14] = { int(rect[14].x * (newW / 1010)), int(rect[14].y * (newH / 980)), int(rect[14].w * (newW / 1010)) + 1, int(rect[14].h * (newH / 980)) + 1}; // gamezone
+	blueX0 = int(17 * (newW / 1200) + 0.5);
+	blueY0 = int(892 * (newH / 1000) + 0.5);
+	redX0 = int(64 * (newW / 1200) + 0.5);
+	redY0 = int(892 * (newH / 1000) + 0.5);
 
-	blueX0 = int(17 * (newW / beforeW));
-	blueY0 = 892 * (newH / beforeH);
-	redX0 = 64 * (newW / beforeW);
-	redY0 = 892 * (newH / beforeH);
-
+	loadFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tmove, tmap);
+	tblueX = int(tblueX * (newW / beforeW) + 0.5);
+	tblueY = int(tblueY * (newH / beforeH) + 0.5);
+	tredX = int(tredX * (newW / beforeW) + 0.5);
+	tredY = int(tredY * (newH / beforeH) + 0.5);
+	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tmove, tmap);
 }
 
 SDL_Texture* get_text_texture(SDL_Renderer*& renderer, char* text, TTF_Font* font)
