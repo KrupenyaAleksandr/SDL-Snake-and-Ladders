@@ -179,6 +179,13 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 			return;
 		}
 
+		if (playerScore + randomArray[5] == 100) {
+			rect[chip] = { rect[chip].x - int((100 * (newW / 1200)) * randomArray[5]), rect[chip].y, rect[chip].w, rect[chip].h };
+			playerScore += randomArray[5];
+			drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
+			return;
+		}
+
 		if (playerScore == 10) {
 			switch (chip) {
 			case 4: rect[chip] = { int(917 * (newW / 1200)), int(796 * (newH / 1000)), rect[chip].w, rect[chip].h }; break;
