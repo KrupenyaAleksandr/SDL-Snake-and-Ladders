@@ -10,6 +10,30 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	SDL_Event event;
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
+			SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
+			if (firstScore == 100 || secondScore == 100) {
+				if (firstScore == 100) {
+					surface = SDL_LoadBMP("firstplayerwin.bmp");
+					texture = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+					SDL_DestroyTexture(texture);
+					SDL_RenderPresent(renderer);
+				}
+				else {
+					surface = SDL_LoadBMP("secondplayerwin.bmp");
+					texture = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+					SDL_DestroyTexture(texture);
+					SDL_RenderPresent(renderer);
+				}
+				if (event.type == SDL_MOUSEBUTTONUP)
+					if (event.button.x >= rect[3].x && event.button.x <= rect[3].x + rect[3].w && event.button.y >= rect[3].y && event.button.y <= rect[3].y + rect[6].h) { 
+						Mix_FreeChunk(DICE);
+						quit = true; 
+					}
+			}
 			switch (event.type) {
 			case SDL_QUIT: { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, movingPlayer, map); exit(0); } break;
 			case SDL_KEYUP: {
@@ -39,22 +63,22 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			} break;
 			case SDL_MOUSEBUTTONUP: { 
 				if (event.button.x >= rect[6].x && event.button.x <= rect[6].x + rect[6].w && event.button.y >= rect[6].y && event.button.y <= rect[6].y + rect[6].h) {
-
+					SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
 					Mix_PlayChannel(-1, DICE, 0);
 					switch (movingPlayer) {
 					case 1: chipMoving(window, renderer, surface, texture, rect, movingPlayer, firstScore, map, beforeW, beforeH, newW, newH); break;
-					case 2: chipMoving(window, renderer, surface, texture, rect,movingPlayer, secondScore, map, beforeW, beforeH, newW, newH); break;
+					case 2: chipMoving(window, renderer, surface, texture, rect, movingPlayer, secondScore, map, beforeW, beforeH, newW, newH); break;
 					}
 
 					if (movingPlayer == 1) {
 						movingPlayer = 2;
 					}
-					else { movingPlayer = 1; } 
+					else { movingPlayer = 1; }
 
 					drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
 
 					cout << "bebra" << endl;
-			}
+				}
 			} break;
 			default: break;
 			}
