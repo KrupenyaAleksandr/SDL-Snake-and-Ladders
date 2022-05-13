@@ -6,19 +6,21 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	//rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	//rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
-
 	bool quit = false, wr = false;
 	SDL_Event event;
+
+	FILE* rec = fopen("record.txt", "a+");
+	fseek(rec, 0, SEEK_END);
+	long pos = ftell(rec);
+	if (pos != 0) {
+		fseek(rec, 0, SEEK_SET);
+		fscanf(rec, "%d", &record);
+	}
+
 	while (!quit) {
-		FILE* rec = fopen("record.txt", "r");
-		fseek(rec, 0, SEEK_END);
-		long pos = ftell(rec);
-		if (pos != 0) {
-			fscanf(rec, "%d", &record);
-		}
-		fclose(rec);
+
 		while (SDL_PollEvent(&event)) {
-			SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
+			//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
 				if (firstScore == 100) {
 					surface = SDL_LoadBMP("firstplayerwin.bmp");
@@ -49,6 +51,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 						Mix_FreeChunk(DICE);
 						cout << "first: " << first_steps << endl;
 						cout << "second: " << second_steps << endl;
+						fclose(rec);
 						quit = true; 
 					}
 			}
@@ -81,7 +84,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			} break;
 			case SDL_MOUSEBUTTONUP: { 
 				if (event.button.x >= rect[6].x && event.button.x <= rect[6].x + rect[6].w && event.button.y >= rect[6].y && event.button.y <= rect[6].y + rect[6].h) {
-					SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
+					//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
 					Mix_PlayChannel(-1, DICE, 0);
 					switch (movingPlayer) {
 					case 1: chipMoving(window, renderer, surface, texture, rect, movingPlayer, firstScore, map, beforeW, beforeH, newW, newH); break;
