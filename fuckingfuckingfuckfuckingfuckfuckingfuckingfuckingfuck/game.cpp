@@ -2,13 +2,21 @@
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& movingPlayer) {
 	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
-	int W, H;
+	int W, H, first_steps = 0, second_steps = 0, record = 100000;
 	//rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	//rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
-	bool quit = false;
+
+	bool quit = false, wr = false;
 	SDL_Event event;
 	while (!quit) {
+		FILE* rec = fopen("record.txt", "r");
+		fseek(rec, 0, SEEK_END);
+		long pos = ftell(rec);
+		if (pos != 0) {
+			fscanf(rec, "%d", &record);
+		}
+		fclose(rec);
 		while (SDL_PollEvent(&event)) {
 			SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
@@ -19,6 +27,10 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
+					if (first_steps < record || wr == false) {
+						fprintf(rec, "%d", first_steps);
+						wr = true;
+					}
 				}
 				else {
 					surface = SDL_LoadBMP("secondplayerwin.bmp");
@@ -27,10 +39,16 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
+					if (second_steps < record || wr == false) {
+						fprintf(rec, "%d", second_steps);
+						wr = true;
+					}
 				}
 				if (event.type == SDL_MOUSEBUTTONUP)
 					if (event.button.x >= rect[3].x && event.button.x <= rect[3].x + rect[3].w && event.button.y >= rect[3].y && event.button.y <= rect[3].y + rect[6].h) { 
 						Mix_FreeChunk(DICE);
+						cout << "first: " << first_steps << endl;
+						cout << "second: " << second_steps << endl;
 						quit = true; 
 					}
 			}
@@ -72,12 +90,15 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 					if (movingPlayer == 1) {
 						movingPlayer = 2;
+						first_steps++;
 					}
-					else { movingPlayer = 1; }
+					else { 
+						movingPlayer = 1;
+						second_steps++;
+					}
 
 					drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
 
-					cout << "bebra" << endl;
 				}
 			} break;
 			default: break;
@@ -197,18 +218,18 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 	}
 	SDL_DestroyTexture(texture);
 
+	if (playerScore + randomArray[5] > 100) {
+		return;
+	}
+
+	if (playerScore + randomArray[5] == 100) {
+		rect[chip] = { rect[chip].x - int((100 * (newW / 1200)) * randomArray[5]), rect[chip].y, rect[chip].w, rect[chip].h };
+		playerScore += randomArray[5];
+		drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
+		return;
+	}
+
 	for (int i = randomArray[5]; i > 0; i--) {
-
-		if (playerScore + randomArray[5] > 100) {
-			return;
-		}
-
-		if (playerScore + randomArray[5] == 100) {
-			rect[chip] = { rect[chip].x - int((100 * (newW / 1200)) * randomArray[5]), rect[chip].y, rect[chip].w, rect[chip].h };
-			playerScore += randomArray[5];
-			drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
-			return;
-		}
 
 		if (playerScore == 10) {
 			switch (chip) {
@@ -304,7 +325,7 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 		}
 
 		if (playerScore + 1 >= 21 && playerScore + 1 <= 30) {
-			rect[chip] = { rect[chip].x + int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(99 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
@@ -457,7 +478,7 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 	default: break;
 	}
 
-	SDL_Delay(800);
+	SDL_Delay(600);
 }
 
 void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int movingPlayer, int map) {
