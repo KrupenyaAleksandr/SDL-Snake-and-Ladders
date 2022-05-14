@@ -9,14 +9,17 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 	bool quit = false, wr = false;
 	SDL_Event event;
-	while (!quit) {
-		FILE* rec = fopen("record.txt", "r");
-		fseek(rec, 0, SEEK_END);
-		long pos = ftell(rec);
-		if (pos != 0) {
-			fscanf(rec, "%d", &record);
-		}
-		fclose(rec);
+
+	FILE* rec = fopen("record.txt", "r");
+	fseek(rec, 0, SEEK_END);
+	long pos = ftell(rec);
+	if (pos != 0) {
+		fseek(rec, 0, SEEK_SET);
+		fscanf(rec, "%d", &record);
+	}
+	fclose(rec);
+
+	while (!quit){
 		while (SDL_PollEvent(&event)) {
 			SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
@@ -27,9 +30,19 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (first_steps < record || wr == false) {
-						fprintf(rec, "%d", first_steps);
+					if (wr == false) {
+						rec = fopen("record.txt", "w");
+
+						if (first_steps < record && first_steps < second_steps) {
+							fprintf(rec, "%d", first_steps);
+						}
+
+						if (second_steps < record && second_steps < first_steps) {
+							fprintf(rec, "%d", second_steps);
+						}
+
 						wr = true;
+						fclose(rec);
 					}
 				}
 				else {
@@ -39,9 +52,23 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (second_steps < record || wr == false) {
-						fprintf(rec, "%d", second_steps);
+					if (wr == false) {
+						rec = fopen("record.txt", "w");
+
+						if (first_steps < record && first_steps < second_steps) {
+							fprintf(rec, "%d", first_steps);
+						}
+
+						if (second_steps < record && second_steps < first_steps) {
+							fprintf(rec, "%d", second_steps);
+						}
+
+						if (first_steps == second_steps && first_steps < record) {
+							fprintf(rec, "%d", first_steps);
+						}
+
 						wr = true;
+						fclose(rec);
 					}
 				}
 				if (event.type == SDL_MOUSEBUTTONUP)
