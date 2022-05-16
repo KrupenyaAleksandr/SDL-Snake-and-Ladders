@@ -3,15 +3,17 @@
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
 	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-	int blueX0, blueY0, redX0, redY0, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map, first_steps = 0, second_steps = 0;
+	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map, first_steps = 0, second_steps = 0;
 	float newW = 1200, newH = 1000;
-	bool quit = false, initilization = true;
+	bool quit = false, initilization = true, record_quit = false;
 	while (!quit)
 	{
 		if (initilization) {
 			cout << "menu" << endl;
 			Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-			first_score = 90, second_score = 90, player = 1, blueX0 = rect[4].x = 17, blueY0 = rect[4].y = 892, redX0 = rect[5].x = 64, redY0 = rect[5].y = 892;
+			first_score = 90, second_score = 90, player = 1;
+			/*blueX0 = rect[4].x = 17, blueY0 = rect[4].y = 892, redX0 = rect[5].x = 64, redY0 = rect[5].y = 892;*/
+			rect[4].x = blueX0, rect[4].y = blueY0, rect[5].x = redX0, rect[5].y = redY0;
 			surface = SDL_LoadBMP("menu.bmp");
 			texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_FreeSurface(surface);
@@ -45,6 +47,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					initilization = true;
 					chooseMap(event, renderer, surface, texture, rect, map);
 					if (map != 5) {
+						record_quit = false;
 						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
 					}
 					Mix_FreeChunk(BUTTON);
@@ -59,15 +62,16 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
-
+					showRecord(event, window, renderer, surface, texture, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+					initilization = true;
 					cout << "records" << endl;
 				}
-				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y){
+				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					SDL_Delay(300);
-					cout << "quit" << endl; 
-					quit = true;}
-				else { break;  }
+					cout << "quit" << endl;
+					quit = true;
+				} 
 			} break;
 			default: break;
 			}
@@ -177,4 +181,51 @@ void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int
 	FILE* f = fopen("save.txt", "r");
 	fscanf(f, "%d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map);
 	fclose(f);
+}
+
+void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
+	int record = 0, W, H;
+	bool quit = false;
+	FILE* rec = fopen("record.txt", "r");
+	fseek(rec, 0, SEEK_END);
+	long pos = ftell(rec);
+	if (pos != 0) {
+		fseek(rec, 0, SEEK_SET);
+		fscanf(rec, "%d", &record);
+	}
+	fclose(rec);
+	surface = SDL_LoadBMP("record.bmp");
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_DestroyTexture(texture);
+	SDL_RenderPresent(renderer);
+	while (!quit) {
+		if (record != 0) {
+		}
+			while (SDL_PollEvent(&event)) {
+				switch (event.type) {
+				case SDL_MOUSEBUTTONUP: {
+					if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
+						quit = true;
+					}
+
+				} break;
+				case SDL_WINDOWEVENT: {
+					if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+						surface = SDL_LoadBMP("record.bmp");
+						texture = SDL_CreateTextureFromSurface(renderer, surface);
+						SDL_FreeSurface(surface);
+						SDL_RenderCopy(renderer, texture, NULL, NULL);
+						SDL_RenderPresent(renderer);
+						SDL_DestroyTexture(texture);
+						beforeW = newW, beforeH = newH;
+						SDL_GetWindowSize(window, &W, &H);
+						newW = W, newH = H;
+						resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+					}
+				} break;
+				}
+			}
+	}
 }

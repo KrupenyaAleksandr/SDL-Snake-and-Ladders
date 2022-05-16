@@ -114,7 +114,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	}
 }
 
-void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int blueX0, int blueY0, int redX0, int redY0, int beforeW, int beforeH, float newW, float newH, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer) {
+void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer) {
 	SDL_RenderClear(renderer);
 	switch (map) {
 	case 1:  surface = SDL_LoadBMP("map1.bmp");  break;
