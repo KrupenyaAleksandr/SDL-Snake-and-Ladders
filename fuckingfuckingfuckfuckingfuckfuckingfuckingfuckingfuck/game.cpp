@@ -9,16 +9,16 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	bool quit = false, wr = false;
 	SDL_Event event;
 
-	FILE* rec = fopen("record.txt", "a+");
+	FILE* rec = fopen("record.txt", "r");
 	fseek(rec, 0, SEEK_END);
 	long pos = ftell(rec);
 	if (pos != 0) {
 		fseek(rec, 0, SEEK_SET);
 		fscanf(rec, "%d", &record);
 	}
+	fclose(rec);
 
-	while (!quit) {
-
+	while (!quit){
 		while (SDL_PollEvent(&event)) {
 			//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
@@ -29,9 +29,11 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (first_steps < record || wr == false) {
+					if (wr == false && first_steps < record) {
+						rec = fopen("record.txt", "w");
 						fprintf(rec, "%d", first_steps);
 						wr = true;
+						fclose(rec);
 					}
 				}
 				else {
@@ -41,9 +43,11 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (second_steps < record || wr == false) {
+					if (wr == false && second_steps < record) {
+						rec = fopen("record.txt", "w");
 						fprintf(rec, "%d", second_steps);
 						wr = true;
+						fclose(rec);
 					}
 				}
 				if (event.type == SDL_MOUSEBUTTONUP)
