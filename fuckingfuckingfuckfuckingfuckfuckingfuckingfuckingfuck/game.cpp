@@ -30,17 +30,9 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (wr == false) {
+					if (wr == false && first_steps < record) {
 						rec = fopen("record.txt", "w");
-
-						if (first_steps < record && first_steps < second_steps) {
-							fprintf(rec, "%d", first_steps);
-						}
-
-						if (second_steps < record && second_steps < first_steps) {
-							fprintf(rec, "%d", second_steps);
-						}
-
+						fprintf(rec, "%d", first_steps);
 						wr = true;
 						fclose(rec);
 					}
@@ -52,21 +44,9 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (wr == false) {
+					if (wr == false && second_steps < record) {
 						rec = fopen("record.txt", "w");
-
-						if (first_steps < record && first_steps < second_steps) {
-							fprintf(rec, "%d", first_steps);
-						}
-
-						if (second_steps < record && second_steps < first_steps) {
-							fprintf(rec, "%d", second_steps);
-						}
-
-						if (first_steps == second_steps && first_steps < record) {
-							fprintf(rec, "%d", first_steps);
-						}
-
+						fprintf(rec, "%d", second_steps);
 						wr = true;
 						fclose(rec);
 					}
