@@ -1,8 +1,8 @@
 #include "head.h"
 
-void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& movingPlayer) {
+void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer) {
 	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
-	int W, H, first_steps = 0, second_steps = 0, record = 100000;
+	int W, H, record = 100000;
 	//rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	//rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
@@ -29,9 +29,9 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (wr == false && first_steps < record) {
+					if (wr == false && firstSteps < record) {
 						rec = fopen("record.txt", "w");
-						fprintf(rec, "%d", first_steps);
+						fprintf(rec, "%d", firstSteps);
 						wr = true;
 						fclose(rec);
 					}
@@ -43,9 +43,9 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
 					SDL_DestroyTexture(texture);
 					SDL_RenderPresent(renderer);
-					if (wr == false && second_steps < record) {
+					if (wr == false && secondSteps < record) {
 						rec = fopen("record.txt", "w");
-						fprintf(rec, "%d", second_steps);
+						fprintf(rec, "%d", secondSteps);
 						wr = true;
 						fclose(rec);
 					}
@@ -53,16 +53,16 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 				if (event.type == SDL_MOUSEBUTTONUP)
 					if (event.button.x >= rect[3].x && event.button.x <= rect[3].x + rect[3].w && event.button.y >= rect[3].y && event.button.y <= rect[3].y + rect[6].h) { 
 						Mix_FreeChunk(DICE);
-						cout << "first: " << first_steps << endl;
-						cout << "second: " << second_steps << endl;
+						cout << "first: " << firstSteps << endl;
+						cout << "second: " << secondSteps << endl;
 						fclose(rec);
 						quit = true; 
 					}
 			}
 			switch (event.type) {
-			case SDL_QUIT: { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, movingPlayer, map); exit(0); } break;
+			case SDL_QUIT: { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map); exit(0); } break;
 			case SDL_KEYUP: {
-				if (event.key.keysym.sym == SDLK_ESCAPE) { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, movingPlayer, map); Mix_FreeChunk(DICE); quit = true; }
+				if (event.key.keysym.sym == SDLK_ESCAPE) { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map); Mix_FreeChunk(DICE); quit = true; }
 				else { break; }
 			} break;
 			case SDL_WINDOWEVENT: {
@@ -97,11 +97,11 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 					if (movingPlayer == 1) {
 						movingPlayer = 2;
-						first_steps++;
+						firstSteps++;
 					}
 					else { 
 						movingPlayer = 1;
-						second_steps++;
+						secondSteps++;
 					}
 
 					drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
@@ -114,7 +114,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	}
 }
 
-void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& movingPlayer) {
+void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int blueX0, int blueY0, int redX0, int redY0, int beforeW, int beforeH, float newW, float newH, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer) {
 	SDL_RenderClear(renderer);
 	switch (map) {
 	case 1:  surface = SDL_LoadBMP("map1.bmp");  break;
@@ -127,7 +127,7 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	SDL_RenderCopy(renderer, texture, NULL, NULL); 
 	SDL_DestroyTexture(texture);
 	
-	game(window, renderer, surface, texture, rect, 1, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, firstScore, secondScore, movingPlayer);
+	game(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, firstScore, secondScore, firstSteps, secondSteps, movingPlayer);
 }
 
 //void drawChips(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
@@ -486,16 +486,4 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 	}
 
 	SDL_Delay(600);
-}
-
-void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int movingPlayer, int map) {
-	FILE* f = fopen("save.txt", "w");
-	fprintf(f, "%d %d %d %d %d %d %d %d", blueX, blueY, redX, redY, firstScore, secondScore, movingPlayer, map);
-	fclose(f);
-}
-
-void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int& secondScore, int& movingPlayer, int& map) {
-	FILE* f = fopen("save.txt", "r");
-	fscanf(f, "%d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &movingPlayer, &map);
-	fclose(f);
 }

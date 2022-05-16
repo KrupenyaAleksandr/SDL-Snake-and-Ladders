@@ -3,7 +3,7 @@
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
 	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-	int blueX0, blueY0, redX0, redY0, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map = 1;
+	int blueX0, blueY0, redX0, redY0, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map, first_steps = 0, second_steps = 0;
 	float newW = 1200, newH = 1000;
 	bool quit = false, initilization = true;
 	while (!quit)
@@ -43,21 +43,24 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "play" << endl;
 					initilization = true;
-					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, player);
+					chooseMap(event, renderer, surface, texture, rect, map);
+					if (map != 5) {
+						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
+					}
 					Mix_FreeChunk(BUTTON);
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					initilization = true;
-					loadFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, first_score, second_score, player, map);
-					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, player);
+					loadFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, first_score, second_score, first_steps, second_steps, player, map);
+					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
 					Mix_FreeChunk(BUTTON);
 					cout << "continue" << endl;
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 
-					cout << "settings" << endl;
+					cout << "records" << endl;
 				}
 				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y){
 					Mix_PlayChannel(-1, BUTTON, 0);
@@ -89,10 +92,47 @@ void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	menu(window, renderer, surface, texture,  rect);
 }
 
+void chooseMap(SDL_Event& event, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map) {
+	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+	bool quit = false;
+	surface = SDL_LoadBMP("choose.bmp");
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
+	SDL_DestroyTexture(texture);
+	while (!quit) {
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_MOUSEBUTTONUP) {
+				if (event.button.x >= rect[0].x && event.button.x <= rect[0].w + rect[0].x && event.button.y >= rect[0].y && event.button.y <= rect[0].h + rect[0].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = 1;
+					quit = true;
+				}
+				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = 2;
+					quit = true;
+				}
+				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = 3;
+					quit = true;
+				}
+				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = 5;
+					quit = true;
+				}
+			}
+		}
+	}
+}
+
 void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, float newW, float newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 
 	float tmpWIDTH, tmpHEIGHT;
-	int tblueX, tblueY, tredX, tredY, tmove, tmap, tfirst, tsecond;
+	int tblueX, tblueY, tredX, tredY, tmove, tmap, tfirst, tsecond, tfirstmove, tsecondmove;
 
 	rect[0] = { int(rect[0].x * (newW / beforeW) + 0.5), int(rect[0].y * (newH / beforeH) + 0.5), int(rect[0].w * (newW / beforeW) + 0.5), int(rect[0].h * (newH / beforeH) + 0.5) }; // play
 	rect[1] = { int(rect[1].x * (newW / beforeW) + 0.5), int(rect[1].y * (newH / beforeH) + 0.5), int(rect[1].w * (newW / beforeW) + 0.5), int(rect[1].h * (newH / beforeH) + 0.5) }; // records
@@ -109,12 +149,12 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	redX0 = int(64 * (newW / 1200) + 0.5);
 	redY0 = int(892 * (newH / 1000) + 0.5);
 
-	loadFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tmove, tmap);
+	loadFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tfirstmove, tsecondmove, tmove, tmap);
 	tblueX = int(tblueX * (newW / beforeW) + 0.5);
 	tblueY = int(tblueY * (newH / beforeH) + 0.5);
 	tredX = int(tredX * (newW / beforeW) + 0.5);
 	tredY = int(tredY * (newH / beforeH) + 0.5);
-	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tmove, tmap);
+	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tfirstmove, tsecondmove, tmove, tmap);
 }
 
 SDL_Texture* get_text_texture(SDL_Renderer*& renderer, char* text, TTF_Font* font)
@@ -127,19 +167,14 @@ SDL_Texture* get_text_texture(SDL_Renderer*& renderer, char* text, TTF_Font* fon
 	return texture;
 }
 
-//void resizeRects(SDL_Window* window, SDL_Rect rect[], int blueX, int blueY, int redX, int redY) {
-//	int WIDTH, HEIGHT;
-//	float tmpWIDTH, tmpHEIGHT;
-//	SDL_GetWindowSize(window, &WIDTH, &HEIGHT);
-//	tmpWIDTH = WIDTH; tmpHEIGHT = HEIGHT;
-//
-//	rect[0] = { int(368 * (tmpWIDTH / 1200)), int(108 * (tmpHEIGHT / 1000)), int(500 * (tmpWIDTH / 1200)), int(124 * (tmpHEIGHT / 1000)) }; // play
-//	rect[1] = { int(368 * (tmpWIDTH / 1200)), int(328 * (tmpHEIGHT / 1000)), int(500 * (tmpWIDTH / 1200)), int(124 * (tmpHEIGHT / 1000)) }; // records
-//	rect[2] = { int(368 * (tmpWIDTH / 1200)), int(548 * (tmpHEIGHT / 1000)), int(500 * (tmpWIDTH / 1200)), int(124 * (tmpHEIGHT / 1000)) }; // settings
-//	rect[3] = { int(368 * (tmpWIDTH / 1200)), int(768 * (tmpHEIGHT / 1000)), int(500 * (tmpWIDTH / 1200)), int(124 * (tmpHEIGHT / 1000)) }; // exit
-//	rect[4] = { int(blueX * (tmpWIDTH / 1200)), int(blueY * (tmpHEIGHT / 1000)), int(45 * (tmpWIDTH / 1200)), int(94 * (tmpHEIGHT / 1000)) }; // bluechip
-//	rect[5] = { int(redX * (tmpWIDTH / 1200)), int(redY * (tmpHEIGHT / 1000)), int(45 * (tmpWIDTH / 1200)), int(94 * (tmpHEIGHT / 1000)) }; // redchip
-//	rect[6] = { int(1041 * (tmpWIDTH / 1200)), int(345 * (tmpHEIGHT / 1000)), int(140 * (tmpWIDTH / 1200)), int(140 * (tmpHEIGHT / 1000)) }; // move_button
-//	rect[7] = { int(1061 * (tmpWIDTH / 1200)), int(515 * (tmpHEIGHT / 1000)), int(100 * (tmpWIDTH / 1200)), int(100 * (tmpHEIGHT / 1000)) }; // dice
-//	rect[14] = { int(11 * (tmpWIDTH / 1200)), int(11 * (tmpHEIGHT / 1000)), int(1010 * (tmpWIDTH / 1200)), int(980 * (tmpHEIGHT / 1000)) }; // gamezone
-//}
+void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer, int map) {
+	FILE* f = fopen("save.txt", "w");
+	fprintf(f, "%d %d %d %d %d %d %d %d %d %d", blueX, blueY, redX, redY, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map);
+	fclose(f);
+}
+
+void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer, int& map) {
+	FILE* f = fopen("save.txt", "r");
+	fscanf(f, "%d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map);
+	fclose(f);
+}
