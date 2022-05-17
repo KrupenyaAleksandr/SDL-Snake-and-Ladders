@@ -45,11 +45,17 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "play" << endl;
 					initilization = true;
-					chooseMap(event, window, renderer, surface, texture, rect, map, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
-					if (map != 5) {
-						record_quit = false;
-						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
+					chooseMode(event, window, renderer, surface, texture, rect, map, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+					if (map == -1) {
+						chooseMap(event, window, renderer, surface, texture, rect, map, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+						if (map != 5) {
+							record_quit = false;
+							initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
+						}
 					}
+					//if (map == 4) {
+
+					//}
 					Mix_FreeChunk(BUTTON);
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
@@ -81,7 +87,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-	window = SDL_CreateWindow(u8"òðàõàë", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
+	window = SDL_CreateWindow(u8"òðàõàë", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_RESIZABLE );
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
 	Mix_Init(0);
@@ -293,4 +299,55 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 			}
 		}
 	}
+}
+
+void chooseMode(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map, int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
+	bool quit = false;
+	int W, H;
+	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+	surface = SDL_LoadBMP("mode.bmp");
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_DestroyTexture(texture);
+	SDL_RenderPresent(renderer);
+	while (!quit) {
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_WINDOWEVENT: {
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+					surface = SDL_LoadBMP("mode.bmp");
+					texture = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+					SDL_RenderPresent(renderer);
+					SDL_DestroyTexture(texture);
+					beforeW = newW, beforeH = newH;
+					SDL_GetWindowSize(window, &W, &H);
+					newW = W, newH = H;
+					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+				}
+			} break;
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = -1;
+					SDL_Delay(300);
+					quit = true;
+				}
+				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					map = 4;
+					SDL_Delay(300);
+					quit = true;
+				}
+				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
+					SDL_Delay(300);
+					quit = true;
+				}
+			}
+		}
+	}
+	Mix_FreeChunk(BUTTON);
 }
