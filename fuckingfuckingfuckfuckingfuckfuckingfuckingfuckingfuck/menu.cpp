@@ -2,7 +2,7 @@
 
 void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Event event;
-	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+	Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
 	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map, first_steps = 0, second_steps = 0;
 	float newW = 1200, newH = 1000;
 	bool quit = false, initilization = true, record_quit = false;
@@ -10,11 +10,10 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	{
 		if (initilization) {
 			cout << "menu" << endl;
-			Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+			Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
 			first_score = 1, second_score = 1, player = 1;
-			/*blueX0 = rect[4].x = 17, blueY0 = rect[4].y = 892, redX0 = rect[5].x = 64, redY0 = rect[5].y = 892;*/
 			rect[4].x = blueX0, rect[4].y = blueY0, rect[5].x = redX0, rect[5].y = redY0;
-			surface = SDL_LoadBMP("menu.bmp");
+			surface = SDL_LoadBMP("texture/menu.bmp");
 			texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_FreeSurface(surface);
 			SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -27,7 +26,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			case SDL_QUIT: { quit = true; } break;
 			case SDL_WINDOWEVENT: {
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-					surface = SDL_LoadBMP("menu.bmp");
+					surface = SDL_LoadBMP("texture/menu.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -84,30 +83,28 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			}
 		}
 	}
+	Mix_FreeChunk(BUTTON);
 }
 
 void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-	window = SDL_CreateWindow(u8"трахал", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_RESIZABLE );
+	window = SDL_CreateWindow(u8"«меи и лестницы :)", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_RESIZABLE );
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
 	Mix_Init(0);
 	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
-	Mix_Music* MENU = Mix_LoadMUS("C418 - Subwoofer Lullaby.mp3");
+	Mix_Music* MENU = Mix_LoadMUS("music/C418 - Subwoofer Lullaby.mp3");
 	Mix_VolumeMusic(1);
 	Mix_PlayMusic(MENU, -1);
-
-	TTF_Init();
-	TTF_Font* my_font = TTF_OpenFont("HATTEN.ttf", 70);
 
 	menu(window, renderer, surface, texture,  rect);
 }
 
 void chooseMap(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map, int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 	int W, H;
-	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
+	Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
 	bool quit = false;
-	surface = SDL_LoadBMP("choose.bmp");
+	surface = SDL_LoadBMP("texture/choose.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -120,27 +117,31 @@ void chooseMap(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL
 				if (event.button.x >= rect[0].x && event.button.x <= rect[0].w + rect[0].x && event.button.y >= rect[0].y && event.button.y <= rect[0].h + rect[0].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					map = 1;
+					SDL_Delay(300);
 					quit = true;
 				}
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					map = 2;
+					SDL_Delay(300);
 					quit = true;
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					map = 3;
+					SDL_Delay(300);
 					quit = true;
 				}
 				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					map = 5;
+					SDL_Delay(300);
 					quit = true;
 				}
 			} break;
 			case SDL_WINDOWEVENT: {
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-					surface = SDL_LoadBMP("choose.bmp");
+					surface = SDL_LoadBMP("texture/choose.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -155,6 +156,7 @@ void chooseMap(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL
 			}
 		}
 	}
+	Mix_FreeChunk(BUTTON);
 }
 
 void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, float newW, float newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
@@ -187,16 +189,6 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tfirstmove, tsecondmove, tmove, tmap);
 }
 
-SDL_Texture* get_text_texture(SDL_Renderer*& renderer, char* text, TTF_Font* font)
-{
-	SDL_Surface* textSurface = NULL;
-	SDL_Color fore_color = { 255, 255, 255 };
-	textSurface = TTF_RenderUTF8_Blended(font, text, fore_color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, textSurface);
-	SDL_FreeSurface(textSurface);
-	return texture;
-}
-
 void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer, int map) {
 	FILE* f = fopen("save.txt", "w");
 	fprintf(f, "%d %d %d %d %d %d %d %d %d %d", blueX, blueY, redX, redY, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map);
@@ -210,6 +202,7 @@ void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int
 }
 
 void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
+	Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
 	int record = 0, W, H, number = 0, tmp;
 	bool quit = false;
 	FILE* rec = fopen("record.txt", "r");
@@ -220,7 +213,7 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 		fscanf(rec, "%d", &record);
 	}
 	fclose(rec);
-	surface = SDL_LoadBMP("record.bmp");
+	surface = SDL_LoadBMP("texture/record.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -229,7 +222,7 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 	while (!quit) {
 		if (record != 0) {
 			tmp = record;
-			surface = SDL_LoadBMP("numbersrecord.bmp");
+			surface = SDL_LoadBMP("texture/numbersrecord.bmp");
 			texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_FreeSurface(surface);
 			for (int i = 0; i < 2; i++) {
@@ -255,13 +248,15 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 			switch (event.type) {
 			case SDL_MOUSEBUTTONUP: {
 				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
+					Mix_PlayChannel(-1, BUTTON, 0);
 					quit = true;
+					SDL_Delay(300);
 				}
 
 			} break;
 			case SDL_WINDOWEVENT: {
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-					surface = SDL_LoadBMP("record.bmp");
+					surface = SDL_LoadBMP("texture/record.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -273,7 +268,7 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 					if (record != 0) {
 						tmp = record;
-						surface = SDL_LoadBMP("numbersrecord.bmp");
+						surface = SDL_LoadBMP("texture/numbersrecord.bmp");
 						texture = SDL_CreateTextureFromSurface(renderer, surface);
 						SDL_FreeSurface(surface);
 						for (int i = 0; i < 2; i++) {
@@ -300,13 +295,14 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 			}
 		}
 	}
+	Mix_FreeChunk(BUTTON);
 }
 
 void chooseMode(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map, int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 	bool quit = false;
 	int W, H;
-	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-	surface = SDL_LoadBMP("mode.bmp");
+	Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
+	surface = SDL_LoadBMP("texture/mode.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -317,7 +313,7 @@ void chooseMode(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 			switch (event.type) {
 			case SDL_WINDOWEVENT: {
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-					surface = SDL_LoadBMP("mode.bmp");
+					surface = SDL_LoadBMP("texture/mode.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);

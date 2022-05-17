@@ -1,10 +1,8 @@
 #include "head.h"
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer) {
-	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
+	Mix_Chunk* DICE = Mix_LoadWAV("music/kubik.mp3");
 	int W, H, record = 100000, tmp;
-	//rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
-	//rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
 	bool quit = false, wr = false, tmpflag = false;
 	SDL_Event event;
@@ -20,7 +18,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 
 	while (!quit){
 		while (SDL_PollEvent(&event)) {
-			//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
+			SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
 				if (tmpflag == false) {
 					tmp = rect[6].w;
@@ -28,7 +26,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					tmpflag = true;
 				}
 				if (firstScore == 100) {
-					surface = SDL_LoadBMP("firstplayerwin.bmp");
+					surface = SDL_LoadBMP("texture/firstplayerwin.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -42,7 +40,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					}
 				}
 				else {
-					surface = SDL_LoadBMP("secondplayerwin.bmp");
+					surface = SDL_LoadBMP("texture/secondplayerwin.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					SDL_FreeSurface(surface);
 					SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -78,10 +76,10 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			case SDL_WINDOWEVENT: {
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
 					switch (map) {
-					case 1: surface = SDL_LoadBMP("map1.bmp"); break;
-					case 2: surface = SDL_LoadBMP("map2.bmp"); break;
-					case 3: surface = SDL_LoadBMP("map3.bmp"); break;
-					case 4: surface = SDL_LoadBMP("map4.bmp"); break;
+					case 1: surface = SDL_LoadBMP("texture/map1.bmp"); break;
+					case 2: surface = SDL_LoadBMP("texture/map2.bmp"); break;
+					case 3: surface = SDL_LoadBMP("texture/map3.bmp"); break;
+					case 4: surface = SDL_LoadBMP("texture/map4.bmp"); break;
 					default: break;
 					}
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -99,7 +97,7 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 			} break;
 			case SDL_MOUSEBUTTONUP: { 
 				if (event.button.x >= rect[6].x && event.button.x <= rect[6].x + rect[6].w && event.button.y >= rect[6].y && event.button.y <= rect[6].y + rect[6].h) {
-					//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
+					SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
 					Mix_PlayChannel(-1, DICE, 0);
 					switch (movingPlayer) {
 					case 1: chipMoving(window, renderer, surface, texture, rect, movingPlayer, firstScore, map, beforeW, beforeH, newW, newH); break;
@@ -128,10 +126,10 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer) {
 	SDL_RenderClear(renderer);
 	switch (map) {
-	case 1:  surface = SDL_LoadBMP("map1.bmp");  break;
-	case 2:  surface = SDL_LoadBMP("map2.bmp");  break;
-	case 3:  surface = SDL_LoadBMP("map3.bmp");  break;
-	case 4:  surface = SDL_LoadBMP("map4.bmp"); break;
+	case 1:  surface = SDL_LoadBMP("texture/map1.bmp");  break;
+	case 2:  surface = SDL_LoadBMP("texture/map2.bmp");  break;
+	case 3:  surface = SDL_LoadBMP("texture/map3.bmp");  break;
+	case 4:  surface = SDL_LoadBMP("texture/map4.bmp"); break;
 	default: break;
 	}
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -142,25 +140,12 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	game(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, firstScore, secondScore, firstSteps, secondSteps, movingPlayer);
 }
 
-//void drawChips(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
-//	surface = SDL_LoadBMP("bluechip_scaled.bmp");
-//	texture = SDL_CreateTextureFromSurface(renderer, surface);
-//	SDL_RenderCopy(renderer, texture, NULL, &rect[4]);
-//	SDL_DestroyTexture(texture);
-//	surface = SDL_LoadBMP("redchip_scaled.bmp");
-//	texture = SDL_CreateTextureFromSurface(renderer, surface);
-//	SDL_FreeSurface(surface);
-//	SDL_RenderCopy(renderer, texture, NULL, &rect[5]);
-//	SDL_RenderPresent(renderer);
-//	SDL_DestroyTexture(texture);
-//}
-
 void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int player, int map) {
 	switch (map) {
-	case 1: surface = SDL_LoadBMP("map1.bmp"); break;
-	case 2: surface = SDL_LoadBMP("map2.bmp"); break;
-	case 3: surface = SDL_LoadBMP("map3.bmp"); break;
-	case 4: surface = SDL_LoadBMP("map4.bmp"); break;
+	case 1: surface = SDL_LoadBMP("texture/map1.bmp"); break;
+	case 2: surface = SDL_LoadBMP("texture/map2.bmp"); break;
+	case 3: surface = SDL_LoadBMP("texture/map3.bmp"); break;
+	case 4: surface = SDL_LoadBMP("texture/map4.bmp"); break;
 	default: break;
 	}
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -169,19 +154,19 @@ void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture*
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
 	switch (player) {
-	case 1: surface = SDL_LoadBMP("firstplayer_move.bmp"); break;
-	case 2: surface = SDL_LoadBMP("secondplayer_move.bmp"); break;
+	case 1: surface = SDL_LoadBMP("texture/firstplayer_move.bmp"); break;
+	case 2: surface = SDL_LoadBMP("texture/secondplayer_move.bmp"); break;
 	default: break;
 	}
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, &rect[6]);
 	SDL_DestroyTexture(texture);
-	surface = SDL_LoadBMP("bluechip_scaled.bmp");
+	surface = SDL_LoadBMP("texture/bluechip_scaled.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_RenderCopy(renderer, texture, NULL, &rect[4]);
 	SDL_DestroyTexture(texture);
-	surface = SDL_LoadBMP("redchip_scaled.bmp");
+	surface = SDL_LoadBMP("texture/redchip_scaled.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_RenderCopy(renderer, texture, NULL, &rect[5]);
@@ -209,7 +194,7 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 		randomArray[random] = tmp;
 	}
 
-	surface = SDL_LoadBMP("dice.bmp");
+	surface = SDL_LoadBMP("texture/dice.bmp");
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 

@@ -39,5 +39,9 @@ int main(int argc, char* argv[])
 
 	initMenu(window, renderer, surface, texture, rectsMenu);
 
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyTexture(texture);
+	SDL_Quit();
 	return 0;
 }
