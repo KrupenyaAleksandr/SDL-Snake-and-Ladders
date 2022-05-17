@@ -2,11 +2,11 @@
 
 void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int map, int& blueX0, int& blueY0, int& redX0, int& redY0, int& beforeW, int& beforeH, float& newW, float& newH, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer) {
 	Mix_Chunk* DICE = Mix_LoadWAV("kubik.mp3");
-	int W, H, record = 100000;
+	int W, H, record = 100000, tmp;
 	//rect[4] = { blueX0, blueY0, rect[4].w, rect[4].h }; // bluechip
 	//rect[5] = { redX0, redY0, rect[5].w, rect[5].h }; //redchip
 	drawMovingPlayer(renderer, surface, texture, rect, movingPlayer, map);
-	bool quit = false, wr = false;
+	bool quit = false, wr = false, tmpflag = false;
 	SDL_Event event;
 
 	FILE* rec = fopen("record.txt", "r");
@@ -22,6 +22,11 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 		while (SDL_PollEvent(&event)) {
 			//SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 			if (firstScore == 100 || secondScore == 100) {
+				if (tmpflag == false) {
+					tmp = rect[6].w;
+					rect[6].w = 0;
+					tmpflag = true;
+				}
 				if (firstScore == 100) {
 					surface = SDL_LoadBMP("firstplayerwin.bmp");
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -51,11 +56,16 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					}
 				}
 				if (event.type == SDL_MOUSEBUTTONUP)
-					if (event.button.x >= rect[3].x && event.button.x <= rect[3].x + rect[3].w && event.button.y >= rect[3].y && event.button.y <= rect[3].y + rect[6].h) { 
+					if (event.button.x >= rect[3].x && event.button.x <= rect[3].x + rect[3].w && event.button.y >= rect[3].y && event.button.y <= rect[3].y + rect[6].h) {
+						tmpflag = false;
 						Mix_FreeChunk(DICE);
 						cout << "first: " << firstSteps << endl;
 						cout << "second: " << secondSteps << endl;
 						fclose(rec);
+						if (tmpflag == false) {
+							rect[6].w = tmp;
+							tmpflag = true;
+						}
 						quit = true; 
 					}
 			}

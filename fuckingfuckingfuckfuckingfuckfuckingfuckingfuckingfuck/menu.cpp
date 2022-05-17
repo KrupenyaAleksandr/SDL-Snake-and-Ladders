@@ -45,7 +45,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					Mix_PlayChannel(-1, BUTTON, 0);
 					cout << "play" << endl;
 					initilization = true;
-					chooseMap(event, renderer, surface, texture, rect, map);
+					chooseMap(event, window, renderer, surface, texture, rect, map, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 					if (map != 5) {
 						record_quit = false;
 						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
@@ -96,7 +96,8 @@ void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	menu(window, renderer, surface, texture,  rect);
 }
 
-void chooseMap(SDL_Event& event, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map) {
+void chooseMap(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& map, int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
+	int W, H;
 	Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
 	bool quit = false;
 	surface = SDL_LoadBMP("choose.bmp");
@@ -107,7 +108,8 @@ void chooseMap(SDL_Event& event, SDL_Renderer* renderer, SDL_Surface* surface, S
 	SDL_DestroyTexture(texture);
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_MOUSEBUTTONUP) {
+			switch (event.type) {
+			case SDL_MOUSEBUTTONUP: {
 				if (event.button.x >= rect[0].x && event.button.x <= rect[0].w + rect[0].x && event.button.y >= rect[0].y && event.button.y <= rect[0].h + rect[0].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					map = 1;
@@ -128,6 +130,21 @@ void chooseMap(SDL_Event& event, SDL_Renderer* renderer, SDL_Surface* surface, S
 					map = 5;
 					quit = true;
 				}
+			} break;
+			case SDL_WINDOWEVENT: {
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+					surface = SDL_LoadBMP("choose.bmp");
+					texture = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+					SDL_RenderPresent(renderer);
+					SDL_DestroyTexture(texture);
+					beforeW = newW, beforeH = newH;
+					SDL_GetWindowSize(window, &W, &H);
+					newW = W, newH = H;
+					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+				}
+			} break;
 			}
 		}
 	}
@@ -147,6 +164,8 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	rect[6] = { int(rect[6].x * (newW / beforeW) + 0.5), int(rect[6].y * (newH / beforeH) + 0.5), int(rect[6].w * (newW / beforeW) + 0.5), int(rect[6].h * (newH / beforeH) + 0.5) }; // move_button
 	rect[7] = { int(rect[7].x * (newW / beforeW) + 0.5), int(rect[7].y * (newH / beforeH) + 0.5), int(rect[7].w * (newW / beforeW) + 0.5), int(rect[7].h * (newH / beforeH) + 0.5) }; // dice
 	rect[14] = { int(rect[14].x * (newW / beforeW) + 0.5), int(rect[14].y * (newH / beforeH) + 0.5), int(rect[14].w * (newW / beforeW) + 0.5), int(rect[14].h * (newH / beforeH) + 0.5) }; // gamezone
+	rect[16] = { int(rect[16].x * (newW / beforeW) + 0.5), int(rect[16].y * (newH / beforeH) + 0.5), int(rect[16].w * (newW / beforeW) + 0.5), int(rect[16].h * (newH / beforeH) + 0.5) }; // record(1)
+	rect[17] = { int(rect[17].x * (newW / beforeW) + 0.5), int(rect[17].y * (newH / beforeH) + 0.5), int(rect[17].w * (newW / beforeW) + 0.5), int(rect[17].h * (newH / beforeH) + 0.5) }; // record(1)
 
 	blueX0 = int(17 * (newW / 1200) + 0.5);
 	blueY0 = int(892 * (newH / 1000) + 0.5);
@@ -184,7 +203,7 @@ void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int
 }
 
 void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[], int& beforeW, int& beforeH, float& newW, float& newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
-	int record = 0, W, H;
+	int record = 0, W, H, number = 0, tmp;
 	bool quit = false;
 	FILE* rec = fopen("record.txt", "r");
 	fseek(rec, 0, SEEK_END);
@@ -202,30 +221,76 @@ void showRecord(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SD
 	SDL_RenderPresent(renderer);
 	while (!quit) {
 		if (record != 0) {
+			tmp = record;
+			surface = SDL_LoadBMP("numbersrecord.bmp");
+			texture = SDL_CreateTextureFromSurface(renderer, surface);
+			SDL_FreeSurface(surface);
+			for (int i = 0; i < 2; i++) {
+				number = record % 10;
+				switch (number) {
+				case 0: { SDL_RenderCopy(renderer, texture, &rect[18], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 1: { SDL_RenderCopy(renderer, texture, &rect[19], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 2: { SDL_RenderCopy(renderer, texture, &rect[20], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 3: { SDL_RenderCopy(renderer, texture, &rect[21], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 4: { SDL_RenderCopy(renderer, texture, &rect[22], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 5: { SDL_RenderCopy(renderer, texture, &rect[23], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 6: { SDL_RenderCopy(renderer, texture, &rect[24], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 7: { SDL_RenderCopy(renderer, texture, &rect[25], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 8: { SDL_RenderCopy(renderer, texture, &rect[26], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				case 9: { SDL_RenderCopy(renderer, texture, &rect[27], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+				}
+				record /= 10;
+			}
+			SDL_DestroyTexture(texture);
+			record = tmp;
 		}
-			while (SDL_PollEvent(&event)) {
-				switch (event.type) {
-				case SDL_MOUSEBUTTONUP: {
-					if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
-						quit = true;
-					}
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_MOUSEBUTTONUP: {
+				if (event.button.x >= rect[3].x && event.button.x <= rect[3].w + rect[3].x && event.button.y >= rect[3].y && event.button.y <= rect[3].h + rect[3].y) {
+					quit = true;
+				}
 
-				} break;
-				case SDL_WINDOWEVENT: {
-					if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-						surface = SDL_LoadBMP("record.bmp");
+			} break;
+			case SDL_WINDOWEVENT: {
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+					surface = SDL_LoadBMP("record.bmp");
+					texture = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+					SDL_RenderPresent(renderer);
+					SDL_DestroyTexture(texture);
+					beforeW = newW, beforeH = newH;
+					SDL_GetWindowSize(window, &W, &H);
+					newW = W, newH = H;
+					resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+					if (record != 0) {
+						tmp = record;
+						surface = SDL_LoadBMP("numbersrecord.bmp");
 						texture = SDL_CreateTextureFromSurface(renderer, surface);
 						SDL_FreeSurface(surface);
-						SDL_RenderCopy(renderer, texture, NULL, NULL);
-						SDL_RenderPresent(renderer);
+						for (int i = 0; i < 2; i++) {
+							number = record % 10;
+							switch (number) {
+							case 0: { SDL_RenderCopy(renderer, texture, &rect[18], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 1: { SDL_RenderCopy(renderer, texture, &rect[19], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 2: { SDL_RenderCopy(renderer, texture, &rect[20], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 3: { SDL_RenderCopy(renderer, texture, &rect[21], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 4: { SDL_RenderCopy(renderer, texture, &rect[22], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 5: { SDL_RenderCopy(renderer, texture, &rect[23], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 6: { SDL_RenderCopy(renderer, texture, &rect[24], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 7: { SDL_RenderCopy(renderer, texture, &rect[25], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 8: { SDL_RenderCopy(renderer, texture, &rect[26], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							case 9: { SDL_RenderCopy(renderer, texture, &rect[27], &rect[17 - i]); SDL_RenderPresent(renderer); } break;
+							}
+							record /= 10;
+						}
 						SDL_DestroyTexture(texture);
-						beforeW = newW, beforeH = newH;
-						SDL_GetWindowSize(window, &W, &H);
-						newW = W, newH = H;
-						resizeRects(window, rect, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
+						record = tmp;
 					}
 				} break;
-				}
 			}
+			}
+		}
 	}
 }
