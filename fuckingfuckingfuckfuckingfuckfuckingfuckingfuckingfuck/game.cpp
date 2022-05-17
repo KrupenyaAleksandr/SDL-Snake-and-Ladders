@@ -80,7 +80,8 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					switch (map) {
 					case 1: surface = SDL_LoadBMP("map1.bmp"); break;
 					case 2: surface = SDL_LoadBMP("map2.bmp"); break;
-					case 3: surface = SDL_LoadBMP("map3.bmp"); break; 
+					case 3: surface = SDL_LoadBMP("map3.bmp"); break;
+					case 4: surface = SDL_LoadBMP("map4.bmp"); break;
 					default: break;
 					}
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -130,6 +131,7 @@ void initGame(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, 
 	case 1:  surface = SDL_LoadBMP("map1.bmp");  break;
 	case 2:  surface = SDL_LoadBMP("map2.bmp");  break;
 	case 3:  surface = SDL_LoadBMP("map3.bmp");  break;
+	case 4:  surface = SDL_LoadBMP("map4.bmp"); break;
 	default: break;
 	}
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -158,6 +160,7 @@ void drawMovingPlayer(SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture*
 	case 1: surface = SDL_LoadBMP("map1.bmp"); break;
 	case 2: surface = SDL_LoadBMP("map2.bmp"); break;
 	case 3: surface = SDL_LoadBMP("map3.bmp"); break;
+	case 4: surface = SDL_LoadBMP("map4.bmp"); break;
 	default: break;
 	}
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -492,6 +495,9 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 				break;
 			}
 	} break;
+	case 2: break;
+	case 3: break;
+	case 4: break;
 	default: break;
 	}
 
