@@ -357,7 +357,7 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 		}
 
 		if (playerScore + 1 >= 41 && playerScore + 1 <= 50) {
-			rect[chip] = { rect[chip].x + int(101 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
+			rect[chip] = { rect[chip].x + int(99 * (newW / 1200)), rect[chip].y, rect[chip].w, rect[chip].h };
 			playerScore++;
 			continue;
 		}
@@ -486,7 +486,7 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 		if (playerScore == 99)
 			if (chip == 4) {
 				rect[chip] = { int(114 * (newW / 1200)), int(310 * (newH / 1000)), rect[chip].w, rect[chip].h };
-				playerScore = 62;
+				playerScore = 62; 
 				break;
 			}
 			else {
@@ -495,7 +495,104 @@ void chipMoving(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface
 				break;
 			}
 	} break;
-	case 2: break;
+	case 2: {
+		if (playerScore == 9) {
+			if (chip == 4) {
+				rect[chip] = { int(822 * (newW / 1200)), int(701 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 29;
+				break;
+			}
+			else {
+				rect[chip] = { int(867 * (newW / 1200)), int(701 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 29;
+				break;
+			}
+		}
+		if (playerScore == 22) {
+			if (chip == 4) {
+				rect[chip] = { int(515 * (newW / 1200)), int(797 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 15;
+				break;
+			}
+			else {
+				rect[chip] = { int(560 * (newW / 1200)), int(797 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 15;
+				break;
+			}
+		}
+		if (playerScore == 31) {
+			if (chip == 4) {
+				rect[chip] = { int(917 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 50;
+				break;
+			}
+			else {
+				rect[chip] = { int(962 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 50;
+				break;
+			}
+		}
+		if (playerScore == 43) {
+			if (chip == 4) {
+				rect[chip] = { int(219 * (newW / 1200)), int(310 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 63;
+				break;
+			}
+			else {
+				rect[chip] = { int(264 * (newW / 1200)), int(310 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 63;
+				break;
+			}
+		}
+		if (playerScore == 66) {
+			if (chip == 4) {
+				rect[chip] = { int(621 * (newW / 1200)), int(116 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 87;
+				break;
+			}
+			else {
+				rect[chip] = { int(666 * (newW / 1200)), int(116 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 87;
+				break;
+			}
+		}
+		if (playerScore == 67) {
+			if (chip == 4) {
+				rect[chip] = { int(621 * (newW / 1200)), int(602 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 34;
+				break;
+			}
+			else {
+				rect[chip] = { int(666 * (newW / 1200)), int(602 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 34;
+				break;
+			}
+		}
+		if (playerScore == 79) {
+			if (chip == 4) {
+				rect[chip] = { int(18 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 41;
+				break;
+			}
+			else {
+				rect[chip] = { int(63 * (newW / 1200)), int(505 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 41;
+				break;
+			}
+		}
+		if (playerScore == 93) {
+			if (chip == 4) {
+				rect[chip] = { int(822 * (newW / 1200)), int(212 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 72;
+				break;
+			}
+			else {
+				rect[chip] = { int(867 * (newW / 1200)), int(212 * (newH / 1000)), rect[chip].w, rect[chip].h };
+				playerScore = 72;
+				break;
+			}
+		}
+	} break;
 	case 3: break;
 	case 4: break;
 	default: break;

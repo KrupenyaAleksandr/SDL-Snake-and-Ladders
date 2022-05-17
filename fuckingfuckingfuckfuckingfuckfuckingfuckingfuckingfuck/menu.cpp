@@ -11,7 +11,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 		if (initilization) {
 			cout << "menu" << endl;
 			Mix_Chunk* BUTTON = Mix_LoadWAV("button.mp3");
-			first_score = 90, second_score = 90, player = 1;
+			first_score = 1, second_score = 1, player = 1;
 			/*blueX0 = rect[4].x = 17, blueY0 = rect[4].y = 892, redX0 = rect[5].x = 64, redY0 = rect[5].y = 892;*/
 			rect[4].x = blueX0, rect[4].y = blueY0, rect[5].x = redX0, rect[5].y = redY0;
 			surface = SDL_LoadBMP("menu.bmp");
