@@ -96,6 +96,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 void initMenu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_Texture* texture, SDL_Rect rect[]) {
 	SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 	window = SDL_CreateWindow(u8"«меи и лестницы :)", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000, SDL_WINDOW_RESIZABLE );
+	SDL_SetWindowMinimumSize(window, 640, 480);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
 	Mix_Init(0);
@@ -198,9 +199,7 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 }
 
 void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer, int map, int beforeW, int beforeH, float newW, float newH) {
-	//int W = newW, H = newH;
 	FILE* f = fopen("save.txt", "w");
-	//fprintf(f, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d", int(blueX * (beforeW / newW) + 0.5), int(blueY * (beforeH / newH) + 0.5), int(redX * (beforeW / newW) + 0.5), int(redY * (beforeH / newH) + 0.5), firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map, beforeW, beforeH, W, H);
 	fprintf(f, "%d %d %d %d %d %d %d %d %d %d", int(blueX * (beforeW / newW) + 0.5), int(blueY * (beforeH / newH) + 0.5), int(redX * (beforeW / newW) + 0.5), int(redY * (beforeH / newH) + 0.5), firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map);
 	fclose(f);
 }
@@ -208,8 +207,6 @@ void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int seco
 void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer, int& map) {
 	int W, H;
 	FILE* f = fopen("save.txt", "r");
-	//fscanf(f, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map, &W, &H, &beforeW, &beforeH);
-	//newW = W, newH = H;
 	fscanf(f, "%d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map);
 	fclose(f);
 }
