@@ -5,7 +5,7 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 	Mix_Chunk* BUTTON = Mix_LoadWAV("music/button.mp3");
 	int blueX0 = 17, blueY0 = 892, redX0 = 64, redY0 = 892, beforeW = 1200, beforeH = 1000, W, H, player, first_score, second_score, map, first_steps = 0, second_steps = 0;
 	float newW = 1200, newH = 1000;
-	bool quit = false, initilization = true, record_quit = false;
+	bool quit = false, initilization = true;
 	while (!quit)
 	{
 		if (initilization) {
@@ -48,12 +48,10 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					if (map == -1) {
 						chooseMap(event, window, renderer, surface, texture, rect, map, beforeW, beforeH, newW, newH, blueX0, blueY0, redX0, redY0);
 						if (map != 5) {
-							record_quit = false;
 							initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
 						}
 					}
 					if (map == 4) {
-						record_quit = false;
 						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
 					}
 					Mix_FreeChunk(BUTTON);
@@ -61,9 +59,18 @@ void menu(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 				if (event.button.x >= rect[1].x && event.button.x <= rect[1].w + rect[3].x && event.button.y >= rect[1].y && event.button.y <= rect[1].h + rect[1].y) {
 					Mix_PlayChannel(-1, BUTTON, 0);
 					initilization = true;
-					loadFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, first_score, second_score, first_steps, second_steps, player, map);
-					initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
-					Mix_FreeChunk(BUTTON);
+					FILE* save = fopen("save.txt", "r");
+					fseek(save, 0, SEEK_END);
+					long pos = ftell(save);
+					if (pos != 0) {
+						fseek(save, 0, SEEK_SET);
+						fclose(save);
+						loadFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, first_score, second_score, first_steps, second_steps, player, map);
+						//rect[4] = { int(rect[4].x * (newW / beforeW) + 0.5), int(rect[4].y * (newH / beforeH) + 0.5), rect[4].w, rect[4].h };
+						//rect[5] = { int(rect[5].x * (newW / beforeW) + 0.5), int(rect[5].y * (newH / beforeH) + 0.5), rect[5].w, rect[5].h };
+						initGame(window, renderer, surface, texture, rect, map, blueX0, blueY0, redX0, redY0, beforeW, beforeH, newW, newH, first_score, second_score, first_steps, second_steps, player);
+						Mix_FreeChunk(BUTTON);
+					}
 					cout << "continue" << endl;
 				}
 				if (event.button.x >= rect[2].x && event.button.x <= rect[2].w + rect[2].x && event.button.y >= rect[2].y && event.button.y <= rect[2].h + rect[2].y) {
@@ -162,7 +169,8 @@ void chooseMap(SDL_Event& event, SDL_Window* window, SDL_Renderer* renderer, SDL
 void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, float newW, float newH, int& blueX0, int& blueY0, int& redX0, int& redY0) {
 
 	float tmpWIDTH, tmpHEIGHT;
-	int tblueX, tblueY, tredX, tredY, tmove, tmap, tfirst, tsecond, tfirstmove, tsecondmove;
+	int tblueX, tblueY, tredX, tredY, tmove, tmap, tfirst, tsecond, tfirstmove, tsecondmove, tbW = beforeW, tbH = beforeH;
+	float tnW = newW, tnH = newH;
 
 	rect[0] = { int(rect[0].x * (newW / beforeW) + 0.5), int(rect[0].y * (newH / beforeH) + 0.5), int(rect[0].w * (newW / beforeW) + 0.5), int(rect[0].h * (newH / beforeH) + 0.5) }; // play
 	rect[1] = { int(rect[1].x * (newW / beforeW) + 0.5), int(rect[1].y * (newH / beforeH) + 0.5), int(rect[1].w * (newW / beforeW) + 0.5), int(rect[1].h * (newH / beforeH) + 0.5) }; // records
@@ -186,17 +194,22 @@ void resizeRects(SDL_Window* window, SDL_Rect rect[], int beforeW, int beforeH, 
 	tblueY = int(tblueY * (newH / beforeH) + 0.5);
 	tredX = int(tredX * (newW / beforeW) + 0.5);
 	tredY = int(tredY * (newH / beforeH) + 0.5);
-	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tfirstmove, tsecondmove, tmove, tmap);
+	saveFile(tblueX, tblueY, tredX, tredY, tfirst, tsecond, tfirstmove, tsecondmove, tmove, tmap, tbW, tbH, tnW, tnH);
 }
 
-void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer, int map) {
+void saveFile(int blueX, int blueY, int redX, int redY, int firstScore, int secondScore, int firstSteps, int secondSteps, int movingPlayer, int map, int beforeW, int beforeH, float newW, float newH) {
+	//int W = newW, H = newH;
 	FILE* f = fopen("save.txt", "w");
-	fprintf(f, "%d %d %d %d %d %d %d %d %d %d", blueX, blueY, redX, redY, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map);
+	//fprintf(f, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d", int(blueX * (beforeW / newW) + 0.5), int(blueY * (beforeH / newH) + 0.5), int(redX * (beforeW / newW) + 0.5), int(redY * (beforeH / newH) + 0.5), firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map, beforeW, beforeH, W, H);
+	fprintf(f, "%d %d %d %d %d %d %d %d %d %d", int(blueX * (beforeW / newW) + 0.5), int(blueY * (beforeH / newH) + 0.5), int(redX * (beforeW / newW) + 0.5), int(redY * (beforeH / newH) + 0.5), firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map);
 	fclose(f);
 }
 
 void loadFile(int& blueX, int& blueY, int& redX, int& redY, int& firstScore, int& secondScore, int& firstSteps, int& secondSteps, int& movingPlayer, int& map) {
+	int W, H;
 	FILE* f = fopen("save.txt", "r");
+	//fscanf(f, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map, &W, &H, &beforeW, &beforeH);
+	//newW = W, newH = H;
 	fscanf(f, "%d %d %d %d %d %d %d %d %d %d", &blueX, &blueY, &redX, &redY, &firstScore, &secondScore, &firstSteps, &secondSteps, &movingPlayer, &map);
 	fclose(f);
 }

@@ -68,9 +68,9 @@ void game(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* surface, SDL_
 					}
 			}
 			switch (event.type) {
-			case SDL_QUIT: { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map); exit(0); } break;
+			case SDL_QUIT: { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map, beforeW, beforeH, newW, newH); exit(0); } break;
 			case SDL_KEYUP: {
-				if (event.key.keysym.sym == SDLK_ESCAPE) { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map); Mix_FreeChunk(DICE); quit = true; }
+				if (event.key.keysym.sym == SDLK_ESCAPE) { saveFile(rect[4].x, rect[4].y, rect[5].x, rect[5].y, firstScore, secondScore, firstSteps, secondSteps, movingPlayer, map, beforeW, beforeH, newW, newH); Mix_FreeChunk(DICE); quit = true; }
 				else { break; }
 			} break;
 			case SDL_WINDOWEVENT: {
